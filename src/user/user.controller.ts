@@ -5,12 +5,11 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './schemas/User.schema';
 
 @Controller('user')
 export class UserController {
@@ -19,9 +18,12 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     console.log('createUserDto createUserDto');
-
     console.log(createUserDto);
-    await this.userService.create(createUserDto);
+
+      const result = await this.userService.create(createUserDto);
+      return result;
+
+    
   }
 
   @Get()
@@ -31,7 +33,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOneById(id);
   }
 
   @Patch(':id')
