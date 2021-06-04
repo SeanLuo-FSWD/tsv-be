@@ -5,7 +5,7 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ required: true, unique: true})
+  @Prop({ required: true })
   username: string;
 
   @Prop({ required: true, unique: true })
@@ -15,4 +15,5 @@ export class User {
   password: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User).plugin(uniqueValidator);
+export const UserSchema =
+  SchemaFactory.createForClass(User).plugin(uniqueValidator);

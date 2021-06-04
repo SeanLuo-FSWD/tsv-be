@@ -30,12 +30,22 @@ export class UserService {
     }
   }
 
-  findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(): Promise<{ payload: UserDocument[] } | { issue: string }> {
+    try {
+      return { payload: await this.userModel.find().exec() };
+    } catch (error) {
+      return { issue: error.message };
+    }
   }
 
-  findOneByEmailPw(email: string, pw: string): Promise<UserDocument> {
-    return this.userModel.findOne({ email: email, password: pw }).exec();
+  async findOneByEmailPw(email: string, pw: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne({ email: email }).exec();
+    if (!user) return null;
+    const isMatch = await bcrypt.compare(pw, user.password);
+    console.log('user.service.ts findOneByEmailPw');
+    console.log(isMatch);
+    if (isMatch) return user;
+    return null;
   }
 
   findOneById(id: string) {
