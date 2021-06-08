@@ -20,10 +20,8 @@ export class UserController {
     console.log('createUserDto createUserDto');
     console.log(createUserDto);
 
-      const result = await this.userService.create(createUserDto);
-      return result;
-
-    
+    const result = await this.userService.create(createUserDto);
+    return result;
   }
 
   @Get()
