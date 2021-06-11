@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
-export type UserDocument = User & Document;
 
 @Schema()
 export class User {
@@ -15,5 +14,9 @@ export class User {
   password: string;
 }
 
+export type UserDocument = User & Document;
+
+
 export const UserSchema =
-  SchemaFactory.createForClass(User).plugin(uniqueValidator);
+  SchemaFactory.createForClass(User).plugin(uniqueValidator, { message: 'email already used.' });
+

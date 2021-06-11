@@ -3,6 +3,7 @@ import {
   HttpException,
   NotFoundException,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,17 +18,27 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>, // InjectModel is the part that make use of UserSchema from MongooseModule.forFeature .
   ) {}
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<{ payload: UserDocument } | { issue: string }> {
+  async create(createUserDto: CreateUserDto) {
     const passwordHash = await bcrypt.hash(createUserDto.password, 10);
     const createUserObj = { ...createUserDto, password: passwordHash };
     const createdUser = new this.userModel(createUserObj);
+    // try {
+    //   return { payload: await createdUser.save() };
+    // } catch (error) {
+    //   return { issue: error.message };
+    // }
+
     try {
-      return { payload: await createdUser.save() };
-    } catch (error) {
-      return { issue: error.message };
+      await createdUser.save();
+    } catch (err) {
+      console.log('error in user.service.ts - create');
+      console.log(err.message);
+      // throw err;
+      // throw new HttpException(err.message, 401);
+      throw new NotFoundException(err.message);
     }
+
+    console.log('user.service.ts - create : should not be called if error');
   }
 
   async findAll(): Promise<{ payload: UserDocument[] } | { issue: string }> {

@@ -1,6 +1,10 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -15,8 +19,15 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     const user = await this.authService.validateUser(email, password);
     if (!user) {
-      throw new UnauthorizedException();
+      console.log('why exception not matter');
+
+      throw new UnauthorizedException(
+        'fasdfsdfsd',
+        'Please check your login credentials',
+      );
     }
     return user;
+
+    // return user;
   }
 }
