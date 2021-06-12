@@ -4,6 +4,7 @@ import {
   HttpException,
   Injectable,
   UnauthorizedException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
@@ -14,16 +15,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<any> {
-    console.log('000000000000000000000');
-    console.log('inside local.strategy, login hit?');
-
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       console.log('why exception not matter');
 
-      throw new UnauthorizedException(
-        'fasdfsdfsd',
-        'Please check your login credentials',
+      throw new HttpException(
+        'Wrong credentials, please try again',
+        HttpStatus.NOT_FOUND,
       );
     }
     return user;
