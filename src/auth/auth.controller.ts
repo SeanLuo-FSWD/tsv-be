@@ -7,7 +7,6 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';

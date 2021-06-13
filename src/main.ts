@@ -4,6 +4,9 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { MongoExceptionFilter } from './_exception/MongoErrFilter';
 import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { resolve } from 'path';
+dotenv.config({ path: resolve(__dirname, '../.env') });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
