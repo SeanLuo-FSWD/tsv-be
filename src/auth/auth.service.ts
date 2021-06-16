@@ -22,4 +22,17 @@ export class AuthService {
     }
     return null;
   }
+
+  googleRedirect(req) {
+    console.log('googleRedirect --- req.user ' + req.user);
+
+    if (!req.user) {
+      return 'No user from google';
+    }
+
+    return {
+      message: 'User information from google',
+      user: req.user,
+    };
+  }
 }

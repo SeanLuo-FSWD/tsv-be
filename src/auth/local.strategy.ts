@@ -15,6 +15,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<any> {
+    console.log('000000000000000000000');
+    console.log('called BEFORE deserialize User');
+
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       console.log('why exception not matter');
@@ -25,7 +28,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       );
     }
     return user;
-
-    // return user;
+    // return null;
   }
 }
