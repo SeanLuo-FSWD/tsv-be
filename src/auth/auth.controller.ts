@@ -24,6 +24,7 @@ export class AuthController {
   async googleLogin(@Req() req) {
     console.log('gLogin in auth.controller - callable?');
     console.log(req.user);
+    // create user here
 
     return req.user;
   }
@@ -32,13 +33,16 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   googleAuthRedirect(@Req() req, @Res() res) {
     console.log('Google redirect callback called');
-    res.redirect('http://localhost:3000/home');
+    res.redirect('http://localhost:3000/redirect');
     // return this.authService.googleRedirect(req);
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get('authenticate')
   getProfile(@Req() req): string {
+    console.log('authenticateeeee');
+    console.log(req.user);
+
     return req.user;
   }
 

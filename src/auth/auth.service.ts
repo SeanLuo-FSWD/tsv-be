@@ -6,19 +6,22 @@ export class AuthService {
 
   async validateUser(email: string, pw: string) {
     // const passwordHash = await bcrypt.hash(pw, 10);
-    const user = await this.userService.findOneByEmailPw(email, pw);
+    console.log('validateUser');
+
+    const user = await this.userService.verifyLogin(email, pw);
 
     if (user) {
-      const userObj = {
-        userId: user._id,
-        username: user.username,
-        email: user.email,
-      };
+      // const userObj = {
+      //   userId: user._id,
+      //   username: user.username,
+      //   email: user.email,
+      // };
 
-      console.log('auth.service.ts - validateUser : userObj');
-      console.log(userObj);
+      // return userObj;
+      console.log('88888888888888888888');
+      console.log(user._id);
 
-      return userObj;
+      return user._id;
     }
     return null;
   }

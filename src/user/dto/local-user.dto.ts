@@ -5,12 +5,10 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateUserDto {
-  @IsAlphanumeric()
-  @MaxLength(10)
+export class LocalUserDto {
+  @MaxLength(20)
   @IsNotEmpty()
   username: string;
-  @IsAlphanumeric()
   @IsNotEmpty()
   password: string;
   @IsEmail()

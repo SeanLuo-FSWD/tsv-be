@@ -3,6 +3,8 @@ import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { stringify } from 'querystring';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { UserService } from '../user/user.service';
+import { AccountProps } from '../_constants/enums';
 
 const clientID =
   '100150715003-ait5alj0t5ic08prl7dl5vku2a0va4tr.apps.googleusercontent.com';
@@ -11,7 +13,7 @@ const callbackURL = '/api/auth/google/callback';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
+  constructor(private readonly userService: UserService) {
     super({
       clientID:
         '100150715003-ait5alj0t5ic08prl7dl5vku2a0va4tr.apps.googleusercontent.com',
@@ -27,7 +29,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    console.log('validate inside googleStrategy');
+    console.log('validate inside googleStrategy - profile');
+    console.log(profile);
 
     if (!profile) {
       console.log('Exception inside GoogleStrategy');
@@ -38,16 +41,38 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       );
     }
 
-    const { name, emails, photos } = profile;
-    const user = {
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      picture: photos[0].value,
+    const foundUser = await this.userService.findOneByType({
+      [AccountProps.USERID]: profile.id,
+    });
+
+    console.log('foundUser foundUser foundUser');
+    console.log(foundUser);
+
+    if (!foundUser) {
+      const userObj = {
+        userId: profile.id,
+        username: profile.displayName,
+        accountType: 'google',
+      };
+
+      console.log('userObj');
+      console.log(userObj);
+
+      const createdUser = await this.userService.userCreate(userObj);
+
+      console.log('createdUser createdUser createdUser');
+      console.log(createdUser);
+
+      return {
+        _id: createdUser._id,
+        accessToken,
+      };
+    }
+
+    return {
+      _id: foundUser._id,
       accessToken,
     };
-
-    return user;
     // done(null, user);
   }
 }

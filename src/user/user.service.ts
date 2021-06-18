@@ -1,44 +1,51 @@
-import {
-  Injectable,
-  HttpException,
-  NotFoundException,
-  HttpStatus,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { LocalUserDto } from './dto/local-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
+import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>, // InjectModel is the part that make use of UserSchema from MongooseModule.forFeature .
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const passwordHash = await bcrypt.hash(createUserDto.password, 10);
-    const createUserObj = { ...createUserDto, password: passwordHash };
-    const createdUser = new this.userModel(createUserObj);
-    // try {
-    //   return { payload: await createdUser.save() };
-    // } catch (error) {
-    //   return { issue: error.message };
-    // }
-
+  async userCreate(userObj: User) {
+    const createdUser = new this.userModel(userObj);
     try {
-      await createdUser.save();
+      const savedUser = await createdUser.save();
+      console.log('444444444444444444');
+      console.log(savedUser._id);
+      return savedUser;
     } catch (err) {
-      console.log('error in user.service.ts - create');
+      console.log('error in user.service.ts - userCreate');
       console.log(err.message);
-      // throw err;
-      // throw new HttpException(err.message, 401);
       throw new NotFoundException(err.message);
     }
+  }
 
-    console.log('user.service.ts - create : should not be called if error');
+  async localRegister(createUserDto: LocalUserDto) {
+    console.log('localRegister');
+
+    const passwordHash = await bcrypt.hash(createUserDto.password, 10);
+    console.log('createUserDto.password');
+    console.log(createUserDto.password);
+
+    let createUserObj = {
+      ...createUserDto,
+      password: passwordHash,
+      userId: uuid(),
+      accountType: 'local',
+    };
+
+    console.log(createUserObj);
+    console.log('createUserObj');
+
+    this.userCreate(createUserObj);
   }
 
   async findAll(): Promise<{ payload: UserDocument[] } | { issue: string }> {
@@ -49,18 +56,38 @@ export class UserService {
     }
   }
 
-  async findOneByEmailPw(email: string, pw: string): Promise<UserDocument> {
+  async verifyLogin(email: string, pw: string): Promise<UserDocument> {
+    console.log('user.service.ts findOneByEmailPw');
+    console.log(email);
+    console.log(pw);
+
     const user = await this.userModel.findOne({ email: email }).exec();
     if (!user) return null;
-    const isMatch = await bcrypt.compare(pw, user.password);
-    console.log('user.service.ts findOneByEmailPw');
-    console.log(isMatch);
+    console.log('user');
+    console.log(user);
+    const userObj = user.toObject();
+
+    const isMatch = await bcrypt.compare(pw, userObj.password);
     if (isMatch) return user;
     return null;
   }
 
-  findOneById(id: string) {
-    return 'to implement';
+  async findOneById(id: string) {
+    const user = await this.userModel.findById(id).select('-password -__v');
+    return user;
+  }
+
+  async findOneByType(filter: { [key: string]: string }) {
+    console.log('findOneByType findOneByType : filter');
+
+    console.log(filter);
+
+    const user = await this.userModel.findOne(filter);
+    console.log('user');
+
+    console.log(user);
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

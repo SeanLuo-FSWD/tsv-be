@@ -5,10 +5,11 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { LocalUserDto } from './dto/local-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
@@ -16,11 +17,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserDto: LocalUserDto) {
     console.log('createUserDto createUserDto');
     console.log(createUserDto);
 
-    await this.userService.create(createUserDto);    
+    createUserDto['accountType'] = 'local';
+
+    await this.userService.localRegister(createUserDto);
   }
 
   @Get()
