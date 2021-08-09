@@ -50,9 +50,9 @@ export class UserService {
     this.userCreate(createUserObj);
   }
 
-  async findAll(): Promise<{ payload: User[] } | { issue: string }> {
+  async findAll(): Promise< User[]  | { issue: string }> {
     try {
-      return { payload: await this.userModel.find().exec() };
+      return await this.userModel.find().exec();
     } catch (error) {
       return { issue: error.message };
     }
