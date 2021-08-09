@@ -2,19 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { LocalUserDto } from './dto/local-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './schemas/user.schema';
+import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
+    // private readonly userModel: Model<UserDocument>,
+    private readonly userModel: Model<User>,
   ) {}
 
-  async userCreate(userObj: User) {
+  async userCreate(userObj: LocalUserDto | UserDto) {
     const createdUser = new this.userModel(userObj);
     try {
       const savedUser = await createdUser.save();
@@ -48,7 +50,7 @@ export class UserService {
     this.userCreate(createUserObj);
   }
 
-  async findAll(): Promise<{ payload: UserDocument[] } | { issue: string }> {
+  async findAll(): Promise<{ payload: User[] } | { issue: string }> {
     try {
       return { payload: await this.userModel.find().exec() };
     } catch (error) {
@@ -56,7 +58,7 @@ export class UserService {
     }
   }
 
-  async verifyLogin(email: string, pw: string): Promise<UserDocument> {
+  async verifyLogin(email: string, pw: string): Promise<User> {
     console.log('user.service.ts findOneByEmailPw');
     console.log(email);
     console.log(pw);

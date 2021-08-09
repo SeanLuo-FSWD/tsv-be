@@ -1,7 +1,7 @@
 import { PassportSerializer } from '@nestjs/passport';
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { UserDocument } from 'src/user/schemas/user.schema';
+import { User } from '../user/schemas/user.schema';
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
@@ -19,7 +19,7 @@ export class SessionSerializer extends PassportSerializer {
   }
   async deserializeUser(
     payload: any,
-    done: (err: Error, user?: UserDocument) => void,
+    done: (err: Error, user?: User) => void,
   ): Promise<any> {
     console.log('2222222222222222');
     console.log('deserializeUser called to attach to req.user');

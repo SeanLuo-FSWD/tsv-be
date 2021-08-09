@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 
 @Schema()
-export class User {
+export class User extends Document {
   @Prop({ required: true })
   userId: string;
 
@@ -20,7 +20,7 @@ export class User {
   accountType: string;
 }
 
-export type UserDocument = User & Document;
+// export type UserDocument = User & Document;
 
 export const UserSchema = SchemaFactory.createForClass(User).plugin(
   uniqueValidator,

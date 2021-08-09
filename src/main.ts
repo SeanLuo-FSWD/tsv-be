@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import { MongoExceptionFilter } from './_exception/MongoErrFilter';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';

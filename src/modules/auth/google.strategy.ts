@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { stringify } from 'querystring';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UserService } from '../user/user.service';
-import { AccountProps } from '../_constants/enums';
+import { AccountProps } from './constants/enums';
 
 const clientID =
   '100150715003-ait5alj0t5ic08prl7dl5vku2a0va4tr.apps.googleusercontent.com';

@@ -4,13 +4,12 @@ import {
   IsNotEmpty,
   MaxLength,
 } from 'class-validator';
+import { UserDto } from './user.dto';
 
-export class LocalUserDto {
-  @MaxLength(20)
-  @IsNotEmpty()
-  username: string;
+export class LocalUserDto extends UserDto {
   @IsNotEmpty()
   password: string;
+  
   @IsEmail()
   @IsNotEmpty()
   email: string;
