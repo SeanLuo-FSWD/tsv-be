@@ -6,11 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LocalUserDto } from './dto/local-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 
 @Controller('user')
 export class UserController {
@@ -26,6 +27,7 @@ export class UserController {
     await this.userService.localRegister(createUserDto);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Get()
   async findAll() {
     return await this.userService.findAll();

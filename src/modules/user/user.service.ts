@@ -52,7 +52,12 @@ export class UserService {
 
   async findAll(): Promise< User[]  | { issue: string }> {
     try {
-      return await this.userModel.find().exec();
+
+      const all_users = await this.userModel.find().exec();
+      console.log('findAll - all_users : ');
+      console.log(all_users);
+      
+      return all_users;
     } catch (error) {
       return { issue: error.message };
     }

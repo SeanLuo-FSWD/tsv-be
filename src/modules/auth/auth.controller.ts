@@ -33,8 +33,7 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   googleAuthRedirect(@Req() req, @Res() res) {
     console.log('Google redirect callback called');
-    res.redirect('http://localhost:3000/redirect');
-    // return this.authService.googleRedirect(req);
+    res.redirect('/redirect');
   }
 
   @UseGuards(AuthenticatedGuard)
